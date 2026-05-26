@@ -80,3 +80,30 @@ Paso 9. Ejecutar API
 		dotnet run
 		en django seria python manage.py runserver
 
+Paso 10. Instalar swagger para documentar la API
+	En SistemaVentas.API
+		cd SistemaVentas.API
+		dotnet add package Swashbuckle.AspNetCore
+		esto agrega swagger para documentar y probar los endpoints de la API
+
+	O tambien realizar la instalacion manualmente con:
+		Click derecho en SistemaVentas.API > Administrar paquetes Nueget > Navegar > Swashbuckle.AspNetCore > Instalar
+		Modificar el archivo Program.cs para agregar swagger: (esta en los commits en github)
+
+Paso 11. Crear el github repository
+	Ya sea en la terminal
+
+	O con visual studio
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------
+Paso 1: Instalar Entity Framework Core (EF core)
+	Es el ORM de .NET para interactuar con la base de datos
+		clases C# con tablas SQL
+			🧠 Comparación con Django
+			Django	            .NET
+			ORM Django	        Entity Framework
+			models.Model	    class C#
+			migrate             EF migrations
