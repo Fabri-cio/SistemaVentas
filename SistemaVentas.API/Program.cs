@@ -2,14 +2,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+//builder.Services.AddOpenApi(); //desactivado porque usaremos swagger (mas estandar en empresas)
+
+// Swagger activo
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(); //agregamos el servicio de swagger
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// No usamos openapi 
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.MapOpenApi();
+//}
+
+
+// Swagger activo
+if(app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();     //genera JSON con la documentación de la API
+    app.UseSwaggerUI();   //interfaz visual
 }
 
 app.UseHttpsRedirection();
