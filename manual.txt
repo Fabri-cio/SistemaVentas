@@ -1,0 +1,82 @@
+Paso 1. Crear carpeta del proyecto 
+	mkdir SistemaVentas
+	cd SistemaVentas
+	(carpeta raiz donde vivira todo el sistema)
+
+Paso 2. Crear solucion 
+	dotnet new sln -n SistemaVentas
+	(la solucion sirver para agrupar todos los proyectos contenedor principal de todo el sistema)
+
+Paso 3. Crear la API 
+	dotnet new wepapi -n SistemaVentas.API --framework net9.0
+	(crea el backend estaran los:
+		endpoints
+		controllers
+		login
+		JWT
+		Apis Rest
+	)
+	en django seria el views.py url.py y DRF
+
+Paso 4. Crear Domain (Domain)
+	dotnet new classlib -n SistemaVentas.Domain --framework net9.0
+	(aqui van las entidades del negocio
+		usuario
+		producto
+		Venta
+	)
+	en django equivale a los modelos (models.py)
+
+Paso 5. Crear Application (Aplicacion)
+	dotnet new classlib -n SistemaVentas.Application --framework net9.0
+	(aqui va la logica del sistema
+		DTOS
+		servicios
+		validaciones
+		reglas de negocio
+	)
+	en django equivale a serializers.py y services.py que podria estar en views.py o en un archivo aparte
+
+Paso 6. Crear Infrastructure (Infraestructura)
+	dotnet new classlib -n SistemaVentas.Infrastructure --framework net9.0
+	aqui se conecta con la base de datos , se implementan los repositorios, se configuran los servicios externos:
+	(
+		Entity Framework
+		SQL Server
+		Db Context
+		repositories
+	)
+	en django equivale a ORM Django y la configuracion de la base de datos en settings.py
+
+Paso 7. Agregar proyectos a la solucion
+	dotnet sln add SistemaVentas.API
+	dotnet sln add SistemaVentas.Domain
+	dotnet sln add SistemaVentas.Application
+	dotnet sln add SistemaVentas.Infrastructure
+	le dice a la solucion que estos proyectos forman parte del sistema
+
+Paso 8. Referencias entre proyectos
+	API usa Application e Infrastructure
+		dotnet add SistemaVentas.API reference SistemaVentas.Application
+		dotnet add SistemaVentas.API reference SistemaVentas.Infrastructure
+		la api puede usar:
+			logica de negocio de Application
+			base de datos y repositorios de Infrastructure
+
+	Application usa Domain
+		dotnet add SistemaVentas.Application reference SistemaVentas.Domain
+		la logica de negocio puede usar:
+			Usuario
+			Producto
+			Venta
+
+	Infrastructure usa Domain
+		dotnet add SistemaVentas.Infrastructure reference SistemaVentas.Domain
+		la base de datos puede usar las entidades del dominio para mapearlas a tablas
+
+Paso 9. Ejecutar API
+	cd SistemaVentas.API
+	Ejecutar el proyecto API
+		dotnet run
+		en django seria python manage.py runserver
+

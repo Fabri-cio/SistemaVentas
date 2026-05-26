@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SistemaVentas.API/SistemaVentas.API.csproj" />
+  <Project Path="SistemaVentas.Application/SistemaVentas.Application.csproj" />
+  <Project Path="SistemaVentas.Domain/SistemaVentas.Domain.csproj" />
+  <Project Path="SistemaVentas.Infrastructure/SistemaVentas.Infrastructure.csproj" />
+</Solution>
