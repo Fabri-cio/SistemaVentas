@@ -9,4 +9,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
+
+    // Representa la tabla productos en SQL Server
+    public DbSet<Producto> Productos { get; set; }
 }
