@@ -15,4 +15,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SistemaVentas.Domain\SistemaVentas.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

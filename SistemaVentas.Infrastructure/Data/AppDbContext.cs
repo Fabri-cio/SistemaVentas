@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SistemaVentas.Domain.Entities;
 
 namespace SistemaVentas.Infrastructure.Data;
 
@@ -12,4 +13,15 @@ public class AppDbContext : DbContext
 
     // Representa la tabla productos en SQL Server
     public DbSet<Producto> Productos { get; set; }
+
+    // Conigura el modelo de datos, se puede usar para establecer relaciones, restricciones, etc.
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Configura precision del precio: 18 digitos en total, 2 decimales
+        modelBuilder.Entity<Producto>()
+            .Property(p => p.Precio)
+            .HasPrecision(18, 2); // Configura el tipo decimal con precision y escala
+    }
 }
