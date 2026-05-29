@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SistemaVentas.Application.DTOs;
 using SistemaVentas.Domain.Entities;
 using SistemaVentas.Infrastructure.Data;
 
@@ -35,8 +36,16 @@ namespace SistemaVentas.API.Controllers
         // Enpoint POST:
         // Post /api/productos
         [HttpPost]
-        public async Task<IActionResult> CrearProducto(Producto producto)
+        public async Task<IActionResult> CrearProducto(CreateProductoDto dto)
         {
+            // Convertimos DTO a entidad
+            var producto = new Producto
+            {
+                Nombre = dto.Nombre,
+                Precio = dto.Precio,
+                Stock = dto.Stock
+            };
+
             // Guarda producto de manera temporal en EF Core, pero no se ha guardado en la base de datos
             await _context.Productos.AddAsync(producto);
 
