@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SistemaVentas.Domain.Entities;
 using SistemaVentas.Infrastructure.Data;
 
 namespace SistemaVentas.API.Controllers
@@ -31,5 +32,19 @@ namespace SistemaVentas.API.Controllers
             return Ok(productos);
         }
 
+        // Enpoint POST:
+        // Post /api/productos
+        [HttpPost]
+        public async Task<IActionResult> CrearProducto(Producto producto)
+        {
+            // Guarda producto de manera temporal en EF Core, pero no se ha guardado en la base de datos
+            await _context.Productos.AddAsync(producto);
+
+            // Guarda cambios en SQL Server
+            await _context.SaveChangesAsync();
+
+            // Retorna HTTP 200 con producto creado
+            return Ok(producto);
+        }
     }
 }
