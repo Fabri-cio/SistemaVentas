@@ -13,7 +13,7 @@ namespace SistemaVentas.API.Controllers
     [Route("api/productos")]
     public class ProductosController : ControllerBase
     {
-        // Conexion con la bae de datos
+        // Conexion con la base de datos
         private readonly AppDbContext _context;
 
         // Inyeccion de dependencias del contexto de datos (DbContext)
@@ -53,6 +53,23 @@ namespace SistemaVentas.API.Controllers
             await _context.SaveChangesAsync();
 
             // Retorna HTTP 200 con producto creado
+            return Ok(producto);
+        }
+
+        // Endpoint GET: /api/productos/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductoById(int id)
+        {
+            // Busca el producto por su ID de forma asincrona
+            var producto = await _context.Productos.FindAsync(id);
+
+            // Si no se encuentra el producto, retorna HTTP 404 Not Found
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            // Si se encuentra el producto, retorna HTTP 200 OK con el producto
             return Ok(producto);
         }
     }
