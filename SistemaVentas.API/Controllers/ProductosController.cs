@@ -95,5 +95,28 @@ namespace SistemaVentas.API.Controllers
 
             return Ok(producto);
         }
+
+        // Endpoint DELETE: /api/productos/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> EliminarProducto(int id)
+        {
+            // Busca el producto por su ID de forma asincrona
+            var producto = await _context.Productos.FindAsync(id);
+
+            // Si no se encuentra el producto, retorna HTTP 404 Not Found
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            // Elimina el producto de la base de datos
+            _context.Productos.Remove(producto);
+
+            // Guarda cambios en SQL Server
+            await _context.SaveChangesAsync();
+
+            // Retorna HTTP 200 OK con mensaje de éxito
+            return Ok("Producto eliminado correctamente");
+        }
     }
 }
