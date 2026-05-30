@@ -72,5 +72,28 @@ namespace SistemaVentas.API.Controllers
             // Si se encuentra el producto, retorna HTTP 200 OK con el producto
             return Ok(producto);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ActualizarProducto(int id, UpdateProductoDto dto)
+        {
+            // Buscar producto por ID
+            var producto = await _context.Productos.FindAsync(id);
+
+            // Verificar si existe
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            // Actualizar propiedades del producto con los datos del DTO
+            producto.Nombre = dto.Nombre;
+            producto.Precio = dto.Precio;
+            producto.Stock = dto.Stock;
+
+            // Guardar cambios en la base de datos
+            await _context.SaveChangesAsync();
+
+            return Ok(producto);
+        }
     }
 }
