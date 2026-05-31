@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SistemaVentas.Application.DTOs;
+using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Domain.Entities;
-using SistemaVentas.Infrastructure.Data;
 
 namespace SistemaVentas.API.Controllers
 {
@@ -13,13 +12,13 @@ namespace SistemaVentas.API.Controllers
     [Route("api/productos")]
     public class ProductosController : ControllerBase
     {
-        // Conexion con la base de datos
-        private readonly AppDbContext _context;
+        // Repositorio para acceder a los datos de productos
+        private readonly IProductoRepository _repository;
 
-        // Inyeccion de dependencias del contexto de datos (DbContext)
-        public ProductosController(AppDbContext context)
+        // Inyeccion de dependencias del repositorio de productos
+        public ProductosController(IProductoRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // Endpoint GET: /api/productos
@@ -27,7 +26,7 @@ namespace SistemaVentas.API.Controllers
         public async Task<IActionResult> GetProductos()
         {
             // Obtiene la lista de productos desde la base de datos de forma asincrona
-            var productos = await _context.Productos.ToListAsync();
+            var productos = await _repository.GetAllAsync();
 
             // Retorna la lista de productos con un estado HTTP 200 OK
             return Ok(productos);
@@ -46,11 +45,7 @@ namespace SistemaVentas.API.Controllers
                 Stock = dto.Stock
             };
 
-            // Guarda producto de manera temporal en EF Core, pero no se ha guardado en la base de datos
-            await _context.Productos.AddAsync(producto);
-
-            // Guarda cambios en SQL Server
-            await _context.SaveChangesAsync();
+            await _repository.AddAsync(producto);
 
             // Retorna HTTP 200 con producto creado
             return Ok(producto);
@@ -61,7 +56,7 @@ namespace SistemaVentas.API.Controllers
         public async Task<IActionResult> GetProductoById(int id)
         {
             // Busca el producto por su ID de forma asincrona
-            var producto = await _context.Productos.FindAsync(id);
+            var producto = await _repository.GetByIdAsync(id);
 
             // Si no se encuentra el producto, retorna HTTP 404 Not Found
             if (producto == null)
@@ -77,7 +72,7 @@ namespace SistemaVentas.API.Controllers
         public async Task<IActionResult> ActualizarProducto(int id, UpdateProductoDto dto)
         {
             // Buscar producto por ID
-            var producto = await _context.Productos.FindAsync(id);
+            var producto = await _repository.GetByIdAsync(id);
 
             // Verificar si existe
             if (producto == null)
@@ -91,7 +86,7 @@ namespace SistemaVentas.API.Controllers
             producto.Stock = dto.Stock;
 
             // Guardar cambios en la base de datos
-            await _context.SaveChangesAsync();
+            await _repository.UpdateAsync(producto);
 
             return Ok(producto);
         }
@@ -101,7 +96,7 @@ namespace SistemaVentas.API.Controllers
         public async Task<IActionResult> EliminarProducto(int id)
         {
             // Busca el producto por su ID de forma asincrona
-            var producto = await _context.Productos.FindAsync(id);
+            var producto = await _repository.GetByIdAsync(id);
 
             // Si no se encuentra el producto, retorna HTTP 404 Not Found
             if (producto == null)
@@ -110,10 +105,7 @@ namespace SistemaVentas.API.Controllers
             }
 
             // Elimina el producto de la base de datos
-            _context.Productos.Remove(producto);
-
-            // Guarda cambios en SQL Server
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(id);
 
             // Retorna HTTP 200 OK con mensaje de éxito
             return Ok("Producto eliminado correctamente");

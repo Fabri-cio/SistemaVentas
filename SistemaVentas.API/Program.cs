@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Infrastructure.Data;
+using SistemaVentas.Infrastructure.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +20,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
+// Inyección de dependencias para el repositorio
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+
 var app = builder.Build();
 
 // Swagger solo en desarrollo
-if(app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();     //genera JSON con la documentación de la API
     app.UseSwaggerUI();   //interfaz visual
