@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Infrastructure.Data;
 using SistemaVentas.Infrastructure.Repositories;
+using SistemaVentas.Application.Services;
+using Microsoft.Data.SqlClient;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Inyección de dependencias para el repositorio
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+
+// Inyección de dependencias para el servicio
+builder.Services.AddScoped<IProductoService, ProductoService>();
 
 var app = builder.Build();
 
