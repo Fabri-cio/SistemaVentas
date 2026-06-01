@@ -14,6 +14,9 @@ public class AppDbContext : DbContext
     // Representa la tabla productos en SQL Server
     public DbSet<Producto> Productos { get; set; }
 
+    // Representa la tabla usuarios en SQL Server
+    public DbSet<Usuario> Usuarios { get; set; }
+
     // Conigura el modelo de datos, se puede usar para establecer relaciones, restricciones, etc.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
