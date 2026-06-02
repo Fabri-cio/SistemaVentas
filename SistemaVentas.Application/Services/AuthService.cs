@@ -54,7 +54,7 @@ public class AuthService : IAuthService
         var key =
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    "MiClaveSuperSecreta123456789"
+                    "MiClaveSuperSecretaParaSistemaVentas2026"
                 )
             );
 

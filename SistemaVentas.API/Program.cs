@@ -27,7 +27,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = "SistemaVentas",
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    "MiClaveSuperSecreta123456789"
+                    "MiClaveSuperSecretaParaSistemaVentas2026"
                  )
             )
         };
