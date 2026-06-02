@@ -51,6 +51,8 @@ builder.Services.AddScoped<IProductoService, ProductoService>();
 // Inyección de dependencias para el repositorio de usuarios
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
 
 // Swagger solo en desarrollo
