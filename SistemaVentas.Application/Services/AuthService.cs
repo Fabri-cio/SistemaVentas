@@ -19,12 +19,19 @@ public class AuthService : IAuthService
 
     public async Task RegisterAsync(CreateUsuarioDto dto)
     {
+        var existeUsuario = await _repository.GetByEmailAsync(dto.Email);
+
+        if (existeUsuario != null)
+        {
+            throw new Exception("El email ya esta registrado");
+        }
+
         var usuario = new Usuario
         {
             Nombre = dto.Nombre,
             Email = dto.Email,
 
-
+            // Hash de la contraseña usando BCrypt
             Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
         };
 
