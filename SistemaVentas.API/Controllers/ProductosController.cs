@@ -79,6 +79,7 @@ public class ProductosController : ControllerBase
 
     // Endpoint DELETE: /api/productos/{id}
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")] // Solo los usuarios con rol "Admin" pueden eliminar productos
     public async Task<IActionResult> EliminarProducto(int id)
     {
         // Busca el producto por su ID de forma asincrona

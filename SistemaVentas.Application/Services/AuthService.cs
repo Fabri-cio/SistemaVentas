@@ -36,6 +36,8 @@ public class AuthService : IAuthService
 
             // Hash de la contraseña usando BCrypt
             Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+
+            Role = "User" // Rol por defecto
         };
 
         await _repository.AddAsync(usuario);
@@ -65,6 +67,11 @@ public class AuthService : IAuthService
             new Claim(
                 ClaimTypes.Email,
                 usuario.Email
+            ),
+
+            new Claim(
+                ClaimTypes.Role,
+                usuario.Role
             )
         };
 
