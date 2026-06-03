@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SistemaVentas.Application.DTOs;
 using SistemaVentas.Application.Interfaces;
 
@@ -8,6 +9,7 @@ namespace SistemaVentas.API.Controllers;
 [ApiController]
 // Ruta base: /api/productos
 [Route("api/productos")]
+[Authorize] // Proteger todo el controlador
 public class ProductosController : ControllerBase
 {
     // Servicio para gestionar la logica de negocio relacionada con productos

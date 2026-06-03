@@ -7,6 +7,7 @@ using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Application.Services;
 using SistemaVentas.Infrastructure.Data;
 using SistemaVentas.Infrastructure.Repositories;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +36,50 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Configuracion de Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Configuracion de Swagger con seguridad JWT
+builder.Services.AddSwaggerGen(options =>
+{
+    // Configura la información básica de la API en Swagger
+    options.SwaggerDoc(
+        "v1",
+        new OpenApiInfo
+        {
+            Title = "SistemaVentas API",
+            Version = "v1"
+        });
+
+    // Configura la seguridad JWT en Swagger para que los usuarios puedan autenticarse y probar los endpoints protegidos
+    options.AddSecurityDefinition(
+        "Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Ingrese el token JWT",
+        });
+
+    // Agrega el requisito de seguridad para que Swagger sepa que los endpoints protegidos requieren autenticación JWT
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference =
+                        new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                },
+                Array.Empty<String>()
+            }
+        });
+});
 
 // Configuracion de DataContext con SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
