@@ -8,6 +8,7 @@ using SistemaVentas.Application.Services;
 using SistemaVentas.Infrastructure.Data;
 using SistemaVentas.Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
+using SistemaVentas.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +99,9 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
+
+// Middleware personalizado para manejo global de excepciones
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Swagger solo en desarrollo
 if (app.Environment.IsDevelopment())

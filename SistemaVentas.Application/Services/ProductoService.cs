@@ -40,7 +40,7 @@ public class ProductoService : IProductoService
 
         if (producto == null)
         {
-            return null;
+            throw new Exception("Producto no encontrado");
         }
 
         return new ProductoResponseDto
