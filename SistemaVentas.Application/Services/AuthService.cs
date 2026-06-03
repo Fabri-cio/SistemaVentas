@@ -23,7 +23,9 @@ public class AuthService : IAuthService
         {
             Nombre = dto.Nombre,
             Email = dto.Email,
-            Password = dto.Password,
+
+
+            Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
         };
 
         await _repository.AddAsync(usuario);
@@ -33,9 +35,14 @@ public class AuthService : IAuthService
     {
         var usuario = await _repository.GetByEmailAsync(dto.Email);
 
-        if (usuario == null || usuario.Password != dto.Password)
+        if (usuario == null)
         {
-            throw new Exception("Credenciales inválidas");
+            throw new Exception("Usuario no encontrado");
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.Password, usuario.Password))
+        {
+            throw new Exception("Password incorrecto");
         }
 
         var claims = new[]
