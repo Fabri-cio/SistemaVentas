@@ -7,16 +7,16 @@ namespace SistemaVentas.Application.Interfaces;
 public interface IProductoService
 {
     // Definir los métodos que el servicio de productos debe implementar
-    Task<IEnumerable<Producto>> GetAllAsync();
+    Task<IEnumerable<ProductoResponseDto>> GetAllAsync();
 
     // Agregar un método para obtener un producto por su ID
-    Task<Producto?> GetByIdAsync(int id);
+    Task<ProductoResponseDto?> GetByIdAsync(int id);
 
     // Agregar un método para crear un nuevo producto
-    Task<Producto> CreateAsync(CreateProductoDto dto);
+    Task<ProductoResponseDto> CreateAsync(CreateProductoDto dto);
 
     // Agregar un método para actualizar un producto existente
-    Task<Producto?> UpdateAsync(int id, UpdateProductoDto dto);
+    Task<ProductoResponseDto?> UpdateAsync(int id, UpdateProductoDto dto);
 
     // Agregar un método para eliminar un producto por su ID
     Task<bool> DeleteAsync(int id);

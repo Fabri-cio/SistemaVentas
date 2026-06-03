@@ -18,19 +18,42 @@ public class ProductoService : IProductoService
     }
 
     // Implementar el método GetAllAsync que obtiene todos los productos utilizando el repositorio
-    public async Task<IEnumerable<Producto>> GetAllAsync()
+    public async Task<IEnumerable<ProductoResponseDto>> GetAllAsync()
     {
-        return await _repository.GetAllAsync();
+        var productos = await _repository.GetAllAsync();
+
+        return productos.Select(p =>
+            new ProductoResponseDto
+            {
+                Id = p.Id,
+                Nombre = p.Nombre,
+                Precio = p.Precio,
+                Stock = p.Stock
+            }
+        );
     }
 
     // Implementar el método GetByIdAsync que obtiene un producto por su ID utilizando el repositorio
-    public async Task<Producto?> GetByIdAsync(int id)
+    public async Task<ProductoResponseDto?> GetByIdAsync(int id)
     {
-        return await _repository.GetByIdAsync(id);
+        var producto = await _repository.GetByIdAsync(id);
+
+        if (producto == null)
+        {
+            return null;
+        }
+
+        return new ProductoResponseDto
+        {
+            Id = producto.Id,
+            Nombre = producto.Nombre,
+            Precio = producto.Precio,
+            Stock = producto.Stock
+        };
     }
 
     // Implementar el método CreateAsync que crea un nuevo producto utilizando el repositorio
-    public async Task<Producto> CreateAsync(CreateProductoDto dto)
+    public async Task<ProductoResponseDto> CreateAsync(CreateProductoDto dto)
     {
         var producto = new Producto
         {
@@ -38,35 +61,55 @@ public class ProductoService : IProductoService
             Precio = dto.Precio,
             Stock = dto.Stock
         };
+
         await _repository.AddAsync(producto);
 
-        return producto;
+        return new ProductoResponseDto
+        {
+            Id = producto.Id,
+            Nombre = producto.Nombre,
+            Precio = producto.Precio,
+            Stock = producto.Stock
+        };
     }
 
     // Implementar el método UpdateAsync que actualiza un producto existente utilizando el repositorio
-    public async Task<Producto?> UpdateAsync(int id, UpdateProductoDto dto)
+    public async Task<ProductoResponseDto?> UpdateAsync(int id, UpdateProductoDto dto)
     {
         var producto = await _repository.GetByIdAsync(id);
+
         if (producto == null)
         {
             return null;
         }
+
         producto.Nombre = dto.Nombre;
         producto.Precio = dto.Precio;
         producto.Stock = dto.Stock;
+
         await _repository.UpdateAsync(producto);
-        return producto;
+
+        return new ProductoResponseDto
+        {
+            Id = producto.Id,
+            Nombre = producto.Nombre,
+            Precio = producto.Precio,
+            Stock = producto.Stock
+        };
     }
 
     // Implementar el método DeleteAsync que elimina un producto por su ID utilizando el repositorio
     public async Task<bool> DeleteAsync(int id)
     {
         var producto = await _repository.GetByIdAsync(id);
+
         if (producto == null)
         {
             return false;
         }
+        
         await _repository.DeleteAsync(id);
+        
         return true;
     }
 }
