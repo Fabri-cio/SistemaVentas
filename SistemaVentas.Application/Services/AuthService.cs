@@ -5,16 +5,19 @@ using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Domain.Entities;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace SistemaVentas.Application.Services;
 
 public class AuthService : IAuthService
 {
     private readonly IUsuarioRepository _repository;
+    private readonly IConfiguration _configuration;
 
-    public AuthService(IUsuarioRepository repository)
+    public AuthService(IUsuarioRepository repository, IConfiguration configuration)
     {
         _repository = repository;
+        _configuration = configuration;
     }
 
     public async Task RegisterAsync(CreateUsuarioDto dto)
@@ -68,7 +71,7 @@ public class AuthService : IAuthService
         var key =
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    "MiClaveSuperSecretaParaSistemaVentas2026"
+                    _configuration["Jwt:Key"]!
                 )
             );
 
@@ -79,8 +82,8 @@ public class AuthService : IAuthService
             );
 
         var token = new JwtSecurityToken(
-            issuer: "SistemaVentas",
-            audience: "SistemaVentas",
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
             claims: claims,
             expires: DateTime.Now.AddHours(1),
             signingCredentials: credentials

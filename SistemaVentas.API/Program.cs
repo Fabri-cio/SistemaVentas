@@ -24,11 +24,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "SistemaVentas",
-            ValidAudience = "SistemaVentas",
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    "MiClaveSuperSecretaParaSistemaVentas2026"
+                    builder.Configuration["Jwt:Key"]!
                  )
             )
         };
