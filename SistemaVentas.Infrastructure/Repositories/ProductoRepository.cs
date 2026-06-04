@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SistemaVentas.Application.DTOs;
 using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Domain.Entities;
 using SistemaVentas.Infrastructure.Data;
@@ -21,6 +22,28 @@ public class ProductoRepository : IProductoRepository
     public async Task<IEnumerable<Producto>> GetAllAsync()
     {
         return await _context.Productos.ToListAsync();
+    }
+
+    // Implementa el método para obtener productos paginados de la base de datos
+    public async Task<PagedResponse<Producto>> GetPagedAsync(ProductoQueryDto query)
+    {
+        // Calcula el total de registros para la paginación
+        var totalRecords = await _context.Productos.CountAsync();
+
+        // Obtiene los productos paginados utilizando Skip y Take
+        var productos = await _context.Productos
+            .Skip((query.Page - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .ToListAsync();
+
+        // Devuelve la respuesta paginada con los productos obtenidos
+        return new PagedResponse<Producto>
+        {
+            Page = query.Page,
+            PageSize = query.PageSize,
+            TotalRecords = totalRecords,
+            Data = productos
+        };
     }
 
     // Implementa el método para obtener un producto por su ID de la base de datos

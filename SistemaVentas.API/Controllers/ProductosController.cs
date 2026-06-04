@@ -23,10 +23,10 @@ public class ProductosController : ControllerBase
 
     // Endpoint GET: /api/productos
     [HttpGet]
-    public async Task<IActionResult> GetProductos()
+    public async Task<IActionResult> GetProductos([FromQuery] ProductoQueryDto query)
     {
         // Obtiene la lista de productos desde la base de datos de forma asincrona
-        var productos = await _service.GetAllAsync();
+        var productos = await _service.GetPagedAsync(query);
 
         // Retorna la lista de productos con un estado HTTP 200 OK
         return Ok(productos);

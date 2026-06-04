@@ -1,4 +1,5 @@
-﻿using SistemaVentas.Domain.Entities;
+﻿using SistemaVentas.Application.DTOs;
+using SistemaVentas.Domain.Entities;
 
 namespace SistemaVentas.Application.Interfaces;
 
@@ -7,6 +8,9 @@ public interface IProductoRepository
 {
     // Agrega un método para obtener todos los productos
     Task<IEnumerable<Producto>> GetAllAsync();
+
+    // Agrega un método para obtener productos paginados
+    Task<PagedResponse<Producto>> GetPagedAsync(ProductoQueryDto query);
 
     // Agrega un método para obtener un producto por su ID
     Task<Producto?> GetByIdAsync(int id);

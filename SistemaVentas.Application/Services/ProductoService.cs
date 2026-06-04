@@ -33,6 +33,29 @@ public class ProductoService : IProductoService
         );
     }
 
+    public async Task<PagedResponse<ProductoResponseDto>> GetPagedAsync(ProductoQueryDto query)
+    {
+
+        var pagedProductos = await _repository.GetPagedAsync(query);
+
+        return new PagedResponse<ProductoResponseDto>
+        {
+            Page = pagedProductos.Page,
+            PageSize = pagedProductos.PageSize,
+            TotalRecords = pagedProductos.TotalRecords,
+
+            Data = pagedProductos.Data.Select(p =>
+                new ProductoResponseDto
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    Precio = p.Precio,
+                    Stock = p.Stock
+                }
+            )
+        };
+    }
+
     // Implementar el método GetByIdAsync que obtiene un producto por su ID utilizando el repositorio
     public async Task<ProductoResponseDto?> GetByIdAsync(int id)
     {
