@@ -1,4 +1,5 @@
-﻿using SistemaVentas.Application.DTOs;
+﻿using Microsoft.Extensions.Logging;
+using SistemaVentas.Application.DTOs;
 using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Domain.Entities;
 
@@ -9,12 +10,14 @@ public class ProductoService : IProductoService
 {
     // Inyectar el repositorio de productos a través del constructor para acceder a los métodos de acceso a datos
     private readonly IProductoRepository _repository;
+    private readonly ILogger<ProductoService> _logger;
 
     // El constructor recibe una instancia de IProductoRepository y la asigna a un campo privado para su uso en los métodos del servicio
-    public ProductoService(IProductoRepository repository)
+    public ProductoService(IProductoRepository repository, ILogger<ProductoService> logger)
     {
         // Asignar la instancia del repositorio al campo privado para su uso en los métodos del servicio
         _repository = repository;
+        _logger = logger;
     }
 
     // Implementar el método GetAllAsync que obtiene todos los productos utilizando el repositorio
@@ -63,6 +66,8 @@ public class ProductoService : IProductoService
 
         if (producto == null)
         {
+            _logger.LogWarning("Producto con ID {Id} no encontrado", id);
+
             throw new Exception("Producto no encontrado");
         }
 
@@ -87,6 +92,11 @@ public class ProductoService : IProductoService
 
         await _repository.AddAsync(producto);
 
+        _logger.LogInformation("Producto creado correctamente. Nombre: {Nombre}, Precio: {Precio}",
+            producto.Nombre,
+            producto.Precio
+        );
+
         return new ProductoResponseDto
         {
             Id = producto.Id,
@@ -103,6 +113,8 @@ public class ProductoService : IProductoService
 
         if (producto == null)
         {
+            _logger.LogWarning("Intento de actualización fallida para producto con ID {Id}", id);
+
             return null;
         }
 
@@ -111,6 +123,8 @@ public class ProductoService : IProductoService
         producto.Stock = dto.Stock;
 
         await _repository.UpdateAsync(producto);
+
+        _logger.LogInformation("Producto actualizado correctamente: {Nombre}", producto.Nombre);
 
         return new ProductoResponseDto
         {
@@ -128,11 +142,17 @@ public class ProductoService : IProductoService
 
         if (producto == null)
         {
+            _logger.LogWarning("Intento de eliminación fallida para producto con ID {Id}", id);
+
             return false;
         }
-        
+
         await _repository.DeleteAsync(id);
-        
+
+        _logger.LogInformation("Producto eliminado correctamente. Id: {id}, Nombre: {Nombre}",
+            producto.Id,
+            producto.Nombre);
+
         return true;
     }
 }

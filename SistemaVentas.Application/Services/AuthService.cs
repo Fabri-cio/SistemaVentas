@@ -1,11 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SistemaVentas.Application.DTOs;
 using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Domain.Entities;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 namespace SistemaVentas.Application.Services;
 
@@ -13,11 +14,13 @@ public class AuthService : IAuthService
 {
     private readonly IUsuarioRepository _repository;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthService> _logger;
 
-    public AuthService(IUsuarioRepository repository, IConfiguration configuration)
+    public AuthService(IUsuarioRepository repository, IConfiguration configuration, ILogger<AuthService> logger)
     {
         _repository = repository;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task RegisterAsync(CreateUsuarioDto dto)
@@ -26,6 +29,11 @@ public class AuthService : IAuthService
 
         if (existeUsuario != null)
         {
+            _logger.LogWarning(
+                "Intento de registro fallido para {Email}",
+                dto.Email
+            );
+
             throw new Exception("El email ya esta registrado");
         }
 
@@ -41,20 +49,26 @@ public class AuthService : IAuthService
         };
 
         await _repository.AddAsync(usuario);
+
+        _logger.LogInformation("Usuario registrado correctamente: {Email}", usuario.Email);
     }
 
     public async Task<string> LoginAsync(LoginDto dto)
     {
         var usuario = await _repository.GetByEmailAsync(dto.Email);
 
-        if (usuario == null)
+        if (usuario == null ||
+            !BCrypt.Net.BCrypt.Verify(
+                dto.Password,
+                usuario.Password
+            ))
         {
-            throw new Exception("Usuario no encontrado");
-        }
+            _logger.LogWarning(
+                "Intento de login fallido para {Email}",
+                dto.Email
+            );
 
-        if (!BCrypt.Net.BCrypt.Verify(dto.Password, usuario.Password))
-        {
-            throw new Exception("Password incorrecto");
+            throw new Exception("Credenciales inválidas");
         }
 
         var claims = new[]
@@ -94,6 +108,11 @@ public class AuthService : IAuthService
             claims: claims,
             expires: DateTime.Now.AddHours(double.Parse(_configuration["Jwt:ExpirationHours"]!)),
             signingCredentials: credentials
+        );
+
+        _logger.LogInformation(
+            "Login exitoso para {Email}",
+            usuario.Email
         );
 
         return new JwtSecurityTokenHandler()

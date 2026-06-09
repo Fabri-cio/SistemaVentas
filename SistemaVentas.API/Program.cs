@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Serilog;
 
 using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Application.Services;
@@ -11,6 +12,13 @@ using Microsoft.OpenApi.Models;
 using SistemaVentas.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog( // Configura Serilog para leer la configuración desde appsettings.json
+    (context, configuration) =>
+        configuration.ReadFrom.Configuration(
+            context.Configuration
+        )
+);
 
 // Controllers
 builder.Services.AddControllers();
@@ -99,6 +107,8 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging(); // Middleware de Serilog para registrar las solicitudes HTTP
 
 // Middleware personalizado para manejo global de excepciones
 app.UseMiddleware<ExceptionMiddleware>();
