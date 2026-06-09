@@ -27,11 +27,35 @@ public class ProductoRepository : IProductoRepository
     // Implementa el método para obtener productos paginados de la base de datos
     public async Task<PagedResponse<Producto>> GetPagedAsync(ProductoQueryDto query)
     {
+        // Crea una consulta base para los productos utilizando AsQueryable para permitir la construcción dinámica de la consulta
+        var productosQuery = _context.Productos.AsQueryable();
+
+        // Filtro por Nombre
+        if (!string.IsNullOrWhiteSpace(query.Nombre))
+        {
+            // Filtra los productos cuyo nombre contiene el valor proporcionado en la consulta
+            productosQuery = productosQuery.Where(p => p.Nombre.Contains(query.Nombre));
+        }
+
+        // Filtro por Precio Minimo
+        if (query.PrecioMin.HasValue)
+        {
+            // Filtra los productos cuyo precio es mayor o igual al valor mínimo proporcionado en la consulta
+            productosQuery = productosQuery.Where(p => p.Precio >= query.PrecioMin.Value);
+        }
+
+        // Filtro por Precio Maximo
+        if (query.PrecioMax.HasValue)
+        {
+            // Filtra los productos cuyo precio es menor o igual al valor máximo proporcionado en la consulta
+            productosQuery = productosQuery.Where(p => p.Precio <= query.PrecioMax.Value);
+        }
+
         // Calcula el total de registros para la paginación
-        var totalRecords = await _context.Productos.CountAsync();
+        var totalRecords = await productosQuery.CountAsync();
 
         // Obtiene los productos paginados utilizando Skip y Take
-        var productos = await _context.Productos
+        var productos = await productosQuery
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToListAsync();
