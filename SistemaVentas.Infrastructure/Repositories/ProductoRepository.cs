@@ -51,6 +51,28 @@ public class ProductoRepository : IProductoRepository
             productosQuery = productosQuery.Where(p => p.Precio <= query.PrecioMax.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(query.SortBy))
+        {
+            switch (query.SortBy.ToLower())
+            {
+                case "nombre":
+                    productosQuery = query.Descending
+                        ? productosQuery.OrderByDescending(p => p.Nombre)
+                        : productosQuery.OrderBy(p => p.Nombre);
+                    break;
+                case "precio":
+                    productosQuery = query.Descending
+                        ? productosQuery.OrderByDescending(p => p.Precio)
+                        : productosQuery.OrderBy(p => p.Precio);
+                    break;
+                case "stock":
+                    productosQuery = query.Descending
+                        ? productosQuery.OrderByDescending(p => p.Stock)
+                        : productosQuery.OrderBy(p => p.Stock);
+                    break;
+            }
+        }
+
         // Calcula el total de registros para la paginación
         var totalRecords = await productosQuery.CountAsync();
 

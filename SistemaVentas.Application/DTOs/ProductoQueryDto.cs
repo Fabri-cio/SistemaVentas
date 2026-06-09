@@ -17,4 +17,8 @@ public class ProductoQueryDto
     public decimal? PrecioMin { get; set; } // Filtro por precio mínimo (opcional)
 
     public decimal? PrecioMax { get; set; } // Filtro por precio máximo (opcional)
+
+    public string? SortBy { get; set; } // Campo por el cual ordenar (opcional)
+
+    public bool Descending { get; set; } = false; // Indica si el orden es descendente (por defecto ascendente)
 }
