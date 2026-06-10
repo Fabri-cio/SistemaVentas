@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaVentas.Application.DTOs;
-using SistemaVentas.Application.DTOs.Responses;
 using SistemaVentas.Application.Interfaces;
 
 namespace SistemaVentas.API.Controllers;
@@ -11,7 +10,7 @@ namespace SistemaVentas.API.Controllers;
 // Ruta base: /api/productos
 [Route("api/productos")]
 [Authorize] // Proteger todo el controlador
-public class ProductosController : ControllerBase
+public class ProductosController : BaseController
 {
     // Servicio para gestionar la logica de negocio relacionada con productos
     private readonly IProductoService _service;
@@ -30,7 +29,7 @@ public class ProductosController : ControllerBase
         var productos = await _service.GetPagedAsync(query);
 
         // Retorna la lista de productos con un estado HTTP 200 OK
-        return Ok(productos);
+        return SuccessResponse(productos, "Productos obtenidos correctamente");
     }
 
     // Enpoint POST:
@@ -42,7 +41,7 @@ public class ProductosController : ControllerBase
         var producto = await _service.CreateAsync(dto);
 
         // Retorna HTTP 200 con producto creado
-        return Ok(producto);
+        return SuccessResponse(producto, "Producto creado correctamente");
     }
 
     // Endpoint GET: /api/productos/{id}
@@ -53,13 +52,9 @@ public class ProductosController : ControllerBase
         var producto = await _service.GetByIdAsync(id);
 
 
-        return Ok(
-            new ApiResponse<ProductoResponseDto>
-            {
-                Success = true,
-                Message = "Producto Obtenido Correctamente",
-                Data = producto
-            }
+        return SuccessResponse(
+            producto,
+            "Producto obtenido correctamente"
         );
     }
 
@@ -76,7 +71,7 @@ public class ProductosController : ControllerBase
             return NotFound();
         }
 
-        return Ok(producto);
+        return SuccessResponse(producto, "Producto actualizado correctamente");
     }
 
     // Endpoint DELETE: /api/productos/{id}
@@ -94,6 +89,6 @@ public class ProductosController : ControllerBase
         }
 
         // Retorna HTTP 200 OK con mensaje de éxito
-        return Ok("Producto eliminado correctamente");
+        return SuccessResponse(true, "Producto eliminado correctamente");
     }
 }
