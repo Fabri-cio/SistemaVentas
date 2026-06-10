@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SistemaVentas.Application.DTOs;
+using SistemaVentas.Application.DTOs.Responses;
 using SistemaVentas.Application.Interfaces;
 
 namespace SistemaVentas.API.Controllers;
@@ -51,14 +52,15 @@ public class ProductosController : ControllerBase
         // Busca el producto por su ID de forma asincrona
         var producto = await _service.GetByIdAsync(id);
 
-        // Si no se encuentra el producto, retorna HTTP 404 Not Found
-        if (producto == null)
-        {
-            return NotFound();
-        }
 
-        // Si se encuentra el producto, retorna HTTP 200 OK con el producto
-        return Ok(producto);
+        return Ok(
+            new ApiResponse<ProductoResponseDto>
+            {
+                Success = true,
+                Message = "Producto Obtenido Correctamente",
+                Data = producto
+            }
+        );
     }
 
     // Endpoint PUT: /api/productos/{id}
