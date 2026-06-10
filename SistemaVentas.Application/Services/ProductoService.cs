@@ -137,7 +137,7 @@ public class ProductoService : IProductoService
     }
 
     // Implementar el método DeleteAsync que elimina un producto por su ID utilizando el repositorio
-    public async Task<bool> DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
         var producto = await _repository.GetByIdAsync(id);
 
@@ -153,7 +153,5 @@ public class ProductoService : IProductoService
         _logger.LogInformation("Producto eliminado correctamente. Id: {id}, Nombre: {Nombre}",
             producto.Id,
             producto.Nombre);
-
-        return true;
     }
 }

@@ -21,5 +21,5 @@ public interface IProductoService
     Task<ProductoResponseDto> UpdateAsync(int id, UpdateProductoDto dto);
 
     // Agregar un método para eliminar un producto por su ID
-    Task<bool> DeleteAsync(int id);
+    Task DeleteAsync(int id);
 }

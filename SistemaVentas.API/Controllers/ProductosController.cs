@@ -75,7 +75,7 @@ public class ProductosController : BaseController
     public async Task<IActionResult> EliminarProducto(int id)
     {
         // Busca el producto por su ID de forma asincrona
-        var producto = await _service.DeleteAsync(id);
+        await _service.DeleteAsync(id);
 
         // ya no es necesario el notfound eso vive en el servicio
 
