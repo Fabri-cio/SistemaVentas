@@ -51,7 +51,6 @@ public class ProductosController : BaseController
         // Busca el producto por su ID de forma asincrona
         var producto = await _service.GetByIdAsync(id);
 
-
         return SuccessResponse(
             producto,
             "Producto obtenido correctamente"
@@ -65,11 +64,7 @@ public class ProductosController : BaseController
         // Actualiza el producto en la base de datos utilizando el servicio de productos de forma asincrona
         var producto = await _service.UpdateAsync(id, dto);
 
-        // Verificar si existe
-        if (producto == null)
-        {
-            return NotFound();
-        }
+        // ya no es necesario el notfound eso vive en el servicio
 
         return SuccessResponse(producto, "Producto actualizado correctamente");
     }
@@ -82,11 +77,7 @@ public class ProductosController : BaseController
         // Busca el producto por su ID de forma asincrona
         var producto = await _service.DeleteAsync(id);
 
-        // Si no se encuentra el producto, retorna HTTP 404 Not Found
-        if (!producto)
-        {
-            return NotFound();
-        }
+        // ya no es necesario el notfound eso vive en el servicio
 
         // Retorna HTTP 200 OK con mensaje de éxito
         return SuccessResponse(true, "Producto eliminado correctamente");

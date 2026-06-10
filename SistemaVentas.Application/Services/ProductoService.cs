@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SistemaVentas.Application.DTOs;
+using SistemaVentas.Application.Exceptions;
 using SistemaVentas.Application.Interfaces;
 using SistemaVentas.Domain.Entities;
 
@@ -60,7 +61,7 @@ public class ProductoService : IProductoService
     }
 
     // Implementar el método GetByIdAsync que obtiene un producto por su ID utilizando el repositorio
-    public async Task<ProductoResponseDto?> GetByIdAsync(int id)
+    public async Task<ProductoResponseDto> GetByIdAsync(int id)
     {
         var producto = await _repository.GetByIdAsync(id);
 
@@ -68,7 +69,7 @@ public class ProductoService : IProductoService
         {
             _logger.LogWarning("Producto con ID {Id} no encontrado", id);
 
-            throw new Exception("Producto no encontrado");
+            throw new NotFoundException("Producto no encontrado");
         }
 
         return new ProductoResponseDto
@@ -107,7 +108,7 @@ public class ProductoService : IProductoService
     }
 
     // Implementar el método UpdateAsync que actualiza un producto existente utilizando el repositorio
-    public async Task<ProductoResponseDto?> UpdateAsync(int id, UpdateProductoDto dto)
+    public async Task<ProductoResponseDto> UpdateAsync(int id, UpdateProductoDto dto)
     {
         var producto = await _repository.GetByIdAsync(id);
 
@@ -115,7 +116,7 @@ public class ProductoService : IProductoService
         {
             _logger.LogWarning("Intento de actualización fallida para producto con ID {Id}", id);
 
-            return null;
+            throw new NotFoundException("Producto no encontrado");
         }
 
         producto.Nombre = dto.Nombre;
@@ -144,7 +145,7 @@ public class ProductoService : IProductoService
         {
             _logger.LogWarning("Intento de eliminación fallida para producto con ID {Id}", id);
 
-            return false;
+            throw new NotFoundException("Producto no encontrado");
         }
 
         await _repository.DeleteAsync(id);

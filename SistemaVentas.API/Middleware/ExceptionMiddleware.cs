@@ -26,14 +26,14 @@ namespace SistemaVentas.API.Middleware
                 context.Response.StatusCode =
                     ex switch
                     {
-                        UnauthorizedAccessException => 401, // No autorizado
+                        UnauthorizedException => 401, // No autorizado
 
                         NotFoundException => 404, // No encontrado
 
                         _ => 500 // Error interno del servidor
                     };
 
-                var response = new ErrorResponseDto { Mensaje = ex.Message };
+                var response = new ErrorResponseDto { Message = ex.Message };
 
                 var json = JsonSerializer.Serialize(response);
 
