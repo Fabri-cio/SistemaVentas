@@ -1,3 +1,6 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using SistemaVentas.Application.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +25,10 @@ builder.Host.UseSerilog( // Configura Serilog para leer la configuración desde 
 
 // Controllers
 builder.Services.AddControllers();
+
+builder.Services.AddFluentValidationAutoValidation(); // Habilita validación automática con FluentValidation
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductoDtoValidator>(); // Registra los validadores de FluentValidation desde el ensamblado que contiene CreateProductoDtoValidator
 
 // Configuracion Authentication con JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
