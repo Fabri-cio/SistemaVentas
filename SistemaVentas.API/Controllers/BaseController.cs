@@ -19,4 +19,17 @@ public abstract class BaseController : ControllerBase
             }
         );
     }
+
+    protected IActionResult CreatedResponse<T>(T data, string message = "Registro creado correctamente")
+    {
+        return Created(
+            string.Empty,
+            new ApiResponse<T>
+            {
+                Success = true,
+                Message = message,
+                Data = data
+            }
+        );
+    }
 }

@@ -41,7 +41,7 @@ public class ProductosController : BaseController
         var producto = await _service.CreateAsync(dto);
 
         // Retorna HTTP 200 con producto creado
-        return SuccessResponse(producto, "Producto creado correctamente");
+        return CreatedResponse(producto, "Producto creado correctamente");
     }
 
     // Endpoint GET: /api/productos/{id}
