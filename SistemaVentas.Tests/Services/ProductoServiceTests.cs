@@ -20,7 +20,7 @@ public class ProductoServiceTests
 
         var repositoryMock = new Mock<IProductoRepository>();
 
-        var loggerMock = new Mock<ILogger<IProductoService>();
+        var loggerMock = new Mock<ILogger<ProductoService>>();
 
         var service = new ProductoService(repositoryMock.Object, loggerMock.Object);
 
@@ -45,7 +45,7 @@ public class ProductoServiceTests
 
         var repositoryMock = new Mock<IProductoRepository>();
 
-        var loggerMock = new Mock<ILogger<IProductoService>();
+        var loggerMock = new Mock<ILogger<ProductoService>>();
 
         var service = new ProductoService(repositoryMock.Object, loggerMock.Object);
 
@@ -139,4 +139,84 @@ public class ProductoServiceTests
             .WithMessage("Producto no encontrado");
     }
 
+    [Fact]
+    public async Task UpdateAsync_DebeActualizarProductoCorrectamente()
+    {
+        // Arrange
+
+        var repositoryMock = new Mock<IProductoRepository>();
+
+        var loggerMock = new Mock<ILogger<ProductoService>>();
+
+        var producto = new Producto { Id = 1, Nombre = "Laptop", Precio = 1000, Stock = 56 };
+
+        repositoryMock
+            .Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(producto);
+
+        var service = new ProductoService(repositoryMock.Object, loggerMock.Object);
+
+        var dto = new UpdateProductoDto
+        {
+            Nombre = "Mouse",
+            Precio = 1000,
+            Stock = 20
+        };
+
+        // Act 
+
+        var resultado = await service.UpdateAsync(1, dto);
+
+        // Assert
+
+        resultado.Should().NotBeNull();
+
+        resultado!.Nombre.Should().Be("Mouse");
+
+        resultado.Precio.Should().Be(1000);
+
+        resultado.Stock.Should().Be(20);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_DebeLlamarRepositorioUnaVez()
+    {
+        // Arrange
+
+        var repositoryMock = new Mock<IProductoRepository>();
+
+        var loggerMock = new Mock<ILogger<ProductoService>>();
+
+        var producto = new Producto
+        {
+            Id = 1,
+            Nombre = "Parlantes",
+            Precio = 3000,
+            Stock = 1
+        };
+
+        repositoryMock
+            .Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(producto);
+
+        var service = new ProductoService(repositoryMock.Object, loggerMock.Object);
+
+        var dto = new UpdateProductoDto
+        {
+            Nombre = "USB",
+            Precio = 5,
+            Stock = 1
+        };
+
+        // Act
+
+        await service.UpdateAsync(1, dto);
+
+        // Assert
+
+        repositoryMock.Verify(
+            x => x.UpdateAsync(It.IsAny<Producto>()),
+            Times.Once
+        );
+    }
 }
