@@ -3,4 +3,5 @@
   <Project Path="SistemaVentas.Application/SistemaVentas.Application.csproj" />
   <Project Path="SistemaVentas.Domain/SistemaVentas.Domain.csproj" />
   <Project Path="SistemaVentas.Infrastructure/SistemaVentas.Infrastructure.csproj" />
+  <Project Path="SistemaVentas.Tests/SistemaVentas.Tests.csproj" />
 </Solution>
