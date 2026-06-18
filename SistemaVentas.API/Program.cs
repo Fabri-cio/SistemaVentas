@@ -113,6 +113,8 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging(); // Middleware de Serilog para registrar las solicitudes HTTP

@@ -7,4 +7,6 @@ public class Usuario
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = "User"; // Rol por defecto (User = Usuario)
+
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = []; //antes era new List<RefreshToken>(); pero se puede simplificar
 }

@@ -17,6 +17,7 @@ public class AuthServiceTests
         // Arrange
 
         var repositoryMock = new Mock<IUsuarioRepository>();
+        var refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
         var configurationMock = new Mock<IConfiguration>();
         var loggerMock = new Mock<ILogger<AuthService>>();
 
@@ -26,6 +27,7 @@ public class AuthServiceTests
 
         var service = new AuthService(
             repositoryMock.Object,
+            refreshTokenRepositoryMock.Object,
             configurationMock.Object,
             loggerMock.Object
         );
@@ -55,6 +57,7 @@ public class AuthServiceTests
         // Arrange
 
         var repositoryMock = new Mock<IUsuarioRepository>();
+        var refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
         var configurationMock = new Mock<IConfiguration>();
         var loggerMock = new Mock<ILogger<AuthService>>();
 
@@ -70,6 +73,7 @@ public class AuthServiceTests
 
         var service = new AuthService(
             repositoryMock.Object,
+            refreshTokenRepositoryMock.Object,
             configurationMock.Object,
             loggerMock.Object
         );
@@ -99,6 +103,8 @@ public class AuthServiceTests
         // Arrange
 
         var repositoryMock = new Mock<IUsuarioRepository>();
+        
+        var refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
 
         var configurationMock = new Mock<IConfiguration>();
 
@@ -133,6 +139,7 @@ public class AuthServiceTests
 
         var service = new AuthService(
             repositoryMock.Object,
+            refreshTokenRepositoryMock.Object,
             configurationMock.Object,
             loggerMock.Object
         );
@@ -145,11 +152,17 @@ public class AuthServiceTests
 
         // Act
 
-        var token = await service.LoginAsync(dto);
+        var response = await service.LoginAsync(dto);
 
         // Assert
 
-        token.Should().NotBeNullOrWhiteSpace();
+        response.Should().NotBeNull();
+
+        response.AccessToken.Should()
+            .NotBeNullOrWhiteSpace();
+
+        response.RefreshToken.Should()
+            .NotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -158,6 +171,7 @@ public class AuthServiceTests
         // Arrange
 
         var repositoryMock = new Mock<IUsuarioRepository>();
+        var refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
         var configurationMock = new Mock<IConfiguration>();
         var loggerMock = new Mock<ILogger<AuthService>>();
 
@@ -167,6 +181,7 @@ public class AuthServiceTests
 
         var service = new AuthService(
             repositoryMock.Object,
+            refreshTokenRepositoryMock .Object,
             configurationMock.Object,
             loggerMock.Object
         );
@@ -195,6 +210,7 @@ public class AuthServiceTests
         // Arrange
 
         var repositoryMock = new Mock<IUsuarioRepository>();
+        var refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
         var configurationMock = new Mock<IConfiguration>();
         var loggerMock = new Mock<ILogger<AuthService>>();
 
@@ -215,6 +231,7 @@ public class AuthServiceTests
 
         var service = new AuthService(
             repositoryMock.Object,
+            refreshTokenRepositoryMock.Object,
             configurationMock.Object,
             loggerMock.Object
         );

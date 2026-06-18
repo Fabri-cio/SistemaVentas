@@ -17,6 +17,8 @@ public class AppDbContext : DbContext
     // Representa la tabla usuarios en SQL Server
     public DbSet<Usuario> Usuarios { get; set; }
 
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     // Conigura el modelo de datos, se puede usar para establecer relaciones, restricciones, etc.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,5 +28,12 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Producto>()
             .Property(p => p.Precio)
             .HasPrecision(18, 2); // Configura el tipo decimal con precision y escala
+
+        modelBuilder.Entity<RefreshToken>()
+            .HasOne(rt => rt.Usuario)
+            .WithMany(u => u.RefreshTokens)
+            .HasForeignKey(rt => rt.UsuarioId);
     }
+
+
 }
